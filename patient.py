@@ -1,6 +1,6 @@
-from person import Person
-
-class Patient(Person):
+class Patient:
     def __init__(self, person_id, name, age, disease):
-        super().__init__(person_id, name, age)
+        self.person_id = person_id
+        self.name = name
+        self.age = age
         self.disease = disease

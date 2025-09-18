@@ -4,25 +4,28 @@ from doctor import Doctor
 
 def main():
     hospital = Hospital()
-    hospital.load_data()
+    hospital.load_patients()
+    hospital.load_doctors()
+    hospital.load_appointments()
 
     while True:
-        print("\n🏥 HOSPITAL MANAGEMENT SYSTEM")
+        print("\n===== Hospital Management System =====")
         print("1. Add Patient")
         print("2. Add Doctor")
         print("3. Book Appointment")
-        print("4. View Patients")
-        print("5. View Doctors")
-        print("6. View Appointments")
-        print("7. Save & Exit")
-
+        print("4. View Doctor's Schedule")
+        print("5. View Patients")
+        print("6. View Doctors")
+        print("7. View All Appointments")
+        print("8. Exit")
+        
         choice = input("Enter your choice: ")
 
         if choice == "1":
             pid = input("Enter Patient ID: ")
             name = input("Enter Patient Name: ")
             age = int(input("Enter Patient Age: "))
-            disease = input("Enter Disease: ")
+            disease = input("Enter Patient Disease: ")
             hospital.add_patient(Patient(pid, name, age, disease))
             print("✅ Patient added successfully!")
 
@@ -30,42 +33,50 @@ def main():
             did = input("Enter Doctor ID: ")
             name = input("Enter Doctor Name: ")
             age = int(input("Enter Doctor Age: "))
-            specialty = input("Enter Specialty: ")
+            specialty = input("Enter Doctor Specialty: ")
             hospital.add_doctor(Doctor(did, name, age, specialty))
             print("✅ Doctor added successfully!")
 
         elif choice == "3":
             pid = input("Enter Patient ID: ")
             did = input("Enter Doctor ID: ")
-            time = input("Enter Appointment Time (e.g., 10:00 AM): ")
+            date = input("Enter Appointment Date (YYYY-MM-DD): ")
+            time = input("Enter Appointment Time (HH:MM in 24hr format): ")
             try:
-                hospital.book_appointment(pid, did, time)
+                hospital.book_appointment(pid, did, date, time)
                 print("✅ Appointment booked successfully!")
             except ValueError as e:
                 print(f"❌ Error: {e}")
 
         elif choice == "4":
-            print("\n📋 Patients List:")
-            for pid, patient in hospital.patients.items():
-                print(f"{pid}: {patient.name}, Age {patient.age}, Disease: {patient.disease}")
+            did = input("Enter Doctor ID: ")
+            date = input("Enter Date (YYYY-MM-DD): ")
+            try:
+                hospital.show_doctor_schedule(did, date)
+            except ValueError as e:
+                print(f"❌ Error: {e}")
 
         elif choice == "5":
-            print("\n👨‍⚕️ Doctors List:")
-            for did, doctor in hospital.doctors.items():
-                print(f"{did}: {doctor.name}, Age {doctor.age}, Specialty: {doctor.specialty}")
+            for p in hospital.patients.values():
+                print(vars(p))
 
         elif choice == "6":
-            print("\n📅 Appointments:")
-            for app in hospital.appointments:
-                print(f"Patient {app.patient_id} with Doctor {app.doctor_id} at {app.time}")
+            for d in hospital.doctors.values():
+                print(vars(d))
 
         elif choice == "7":
-            hospital.save_data()
-            print("💾 Data saved. Exiting system. Goodbye!")
+            for a in hospital.appointments:
+                print(vars(a))
+
+        elif choice == "8":
+            print("💾 Data saved. Exiting...")
+            hospital.save_patients()
+            hospital.save_doctors()
+            hospital.save_appointments()
             break
 
         else:
-            print("⚠️ Invalid choice, please try again.")
+            print("❌ Invalid choice, try again.")
 
 if __name__ == "__main__":
     main()
